@@ -8,16 +8,16 @@ from typing import Optional
 from text_generation_server.models.model import Model
 from text_generation_server.models.causal_lm import CausalLM
 from text_generation_server.models.flash_causal_lm import FlashCausalLM
-from text_generation_server.models.bloom import BLOOM, BLOOMSharded
+#from text_generation_server.models.bloom import BLOOM, BLOOMSharded
 from text_generation_server.models.seq2seq_lm import Seq2SeqLM
-from text_generation_server.models.opt import OPT, OPTSharded
-from text_generation_server.models.galactica import Galactica, GalacticaSharded
+#from text_generation_server.models.opt import OPT, OPTSharded
+#from text_generation_server.models.galactica import Galactica, GalacticaSharded
 from text_generation_server.models.santacoder import SantaCoder
-from text_generation_server.models.gpt_neox import GPTNeoxSharded
-from text_generation_server.models.t5 import T5Sharded
+#from text_generation_server.models.gpt_neox import GPTNeoxSharded
+#from text_generation_server.models.t5 import T5Sharded
 
 try:
-    if torch.cuda.is_available():
+    if False:#torch.cuda.is_available():
         major, minor = torch.cuda.get_device_capability()
         is_sm75 = major == 7 and minor == 5
         is_sm8x = major == 8 and minor >= 0
@@ -101,18 +101,18 @@ def get_model(
         else:
             return Galactica(model_id, revision, quantize=quantize)
 
-    if "bigcode" in model_id:
-        if sharded:
-            if not FLASH_ATTENTION:
-                raise NotImplementedError(
-                    FLASH_ATT_ERROR_MESSAGE.format(f"Sharded Santacoder")
-                )
-            return FlashSantacoderSharded(model_id, revision, quantize=quantize)
-        else:
-            santacoder_cls = FlashSantacoder if FLASH_ATTENTION else SantaCoder
-            return santacoder_cls(model_id, revision, quantize=quantize)
+    #if "bigcode" in model_id:
+    #    if sharded:
+    #        if not FLASH_ATTENTION:
+    #            raise NotImplementedError(
+    #                FLASH_ATT_ERROR_MESSAGE.format(f"Sharded Santacoder")
+    #            )
+    #        return FlashSantacoderSharded(model_id, revision, quantize=quantize)
+    #    else:
+    #        santacoder_cls = FlashSantacoder if FLASH_ATTENTION else SantaCoder
+    #        return santacoder_cls(model_id, revision, quantize=quantize)
 
-    config = AutoConfig.from_pretrained(model_id, revision=revision)
+    config = AutoConfig.from_pretrained(model_id, revision=revision, trust_remote_code=True)
     model_type = config.model_type
 
     if model_type == "bloom":
